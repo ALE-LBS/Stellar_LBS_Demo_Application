@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/textViewBrestMWZ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Brest MWZ" />
+
+    <EditText
+        android:id="@+id/editTextBrestMWZ"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="POI" />
+
+    <TextView
+        android:id="@+id/textViewIBM"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="IBM" />
+
+    <EditText
+        android:id="@+id/editTextIBM"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="POI" />
+
+    <TextView
+        android:id="@+id/textViewArgentine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buenos Aires" />
+
+    <EditText
+        android:id="@+id/editTextArgentine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="POI" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="savePreferences"
+        android:text="Button" />
+
+</LinearLayout>

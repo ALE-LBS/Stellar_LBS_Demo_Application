@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Stellar LBS Demo</string>
+    <string name="search_title">Search</string>
+    <string name="map_selection">Map Selection</string>
+    <string name="ale_brest_visio">ALE Brest Visio</string>
+    <string name="ale_colombes_visio">ALE Colombes Visio</string>
+    <string name="ibm">IBM</string>
+    <string name="ale_argentine_mapwize">ALE Argentine Mapwize</string>
+    <string name="ale_brest_mapwize">ALE Brest Mapwize</string>
+    <string name="positioning">Walking</string>
+    <string name="configuration">Place</string>
+    <string name="simulation">Simulation</string>
+</resources>

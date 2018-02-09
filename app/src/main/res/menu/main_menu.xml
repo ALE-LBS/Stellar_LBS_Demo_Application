@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/map"
+        android:icon="@drawable/ic_menu"
+        android:title="@string/map_selection">
+        <menu>
+            <group>
+                <item android:id="@+id/brestmap"  android:title="@string/ale_brest_visio" android:onClick="changeMap" android:icon="@mipmap/logo_ale"/>
+                <item android:id="@+id/colombesmap"  android:title="@string/ale_colombes_visio" android:onClick="changeMap" android:icon="@mipmap/logo_ale"/>
+                <item android:id="@+id/brestmapbox"  android:title="@string/ale_brest_mapwize" android:onClick="changeMap" android:icon="@mipmap/logo_ale"/>
+                <item android:id="@+id/buenosairesmap"  android:title="@string/ale_argentine_mapwize" android:onClick="changeMap" android:icon="@mipmap/logo_ale"/>
+                <item android:id="@+id/ibmmap"  android:title="@string/ibm" android:onClick="changeMap" android:icon="@mipmap/logo_ibm"/>
+            </group>
+        </menu>
+    </item>
+    <item android:id="@+id/debug"
+        android:title="@string/simulation">
+        <menu>
+            <item android:id="@+id/debugActivity" android:title="@string/configuration" android:onClick="toDebugActivity"/>
+            <item android:id="@+id/positionSimul" android:title="@string/positioning" android:onClick="positioningSimulation"/>
+        </menu>
+    </item>
+
+
+</menu>
