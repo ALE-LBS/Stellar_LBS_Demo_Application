@@ -71,6 +71,7 @@ import io.mapwize.mapwizeformapbox.model.Venue;
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity {
+    //test
 
     private String selectedArea = "";
 
