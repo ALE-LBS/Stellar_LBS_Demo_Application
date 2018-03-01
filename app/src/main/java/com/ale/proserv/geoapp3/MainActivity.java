@@ -61,6 +61,7 @@ import io.mapwize.mapwizeformapbox.MapOptions;
 import io.mapwize.mapwizeformapbox.MapwizePlugin;
 import io.mapwize.mapwizeformapbox.api.Api;
 import io.mapwize.mapwizeformapbox.api.ApiCallback;
+import io.mapwize.mapwizeformapbox.api.ApiFilter;
 import io.mapwize.mapwizeformapbox.api.SearchParams;
 import io.mapwize.mapwizeformapbox.model.Direction;
 import io.mapwize.mapwizeformapbox.model.LatLngFloor;
@@ -71,8 +72,7 @@ import io.mapwize.mapwizeformapbox.model.Venue;
 import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity {
-    //test
-
+    //TODO Log into file (debug mode in preference)
     private String selectedArea = "";
 
     private int venue;
@@ -87,13 +87,12 @@ public class MainActivity extends AppCompatActivity {
     private MapwizePlugin mapwizePlugin;
     private SupportMapFragment mapFragment = null;
     private ManualIndoorLocationProvider manualIndoorLocationProvider;
-    private String venueId = "5993fb7318bafe00104be05b";
+    private String venueId;
     private MapboxMap mapboxMapp;
 
     boolean isServiceStarted;
 
     private FusedLocationProviderClient mFusedLocationClient;
-    private Double[] distances = new Double[4]; //Size = nb of sites
 
     private FloatingSearchView floatingSearchView;
     private Stack<Handler> handlerStack = new Stack<>();
@@ -109,6 +108,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        setVenue(sharedPref.getInt("Venue", R.id.colombesmap));
+        Log.i("debugg", String.valueOf(getVenue()));
         manualIndoorLocationProvider = new ManualIndoorLocationProvider();
         ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE, android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.READ_CONTACTS}, 0);
         super.onCreate(savedInstanceState);
@@ -120,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         mapView = new MapView(this);
         floatingSearchView = (FloatingSearchView) findViewById(R.id.floating_search_view);
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         autoLocation();
     }
 
@@ -134,6 +135,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         MainApplication.activityResumed();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        Log.i("debugg", "destroy" + getVenue());
+        sharedPref.edit().putInt("Venue", getVenue()).apply();
+        super.onDestroy();
     }
 
     public void fetchLocationData(int venue) {
@@ -262,87 +271,48 @@ public class MainActivity extends AppCompatActivity {
 
     public void autoLocation() {
 
-        class VenueLocation {
-            private Double lat;
-            private Double lng;
-            private int venueId;
+        class VenueLocation{
             private com.google.android.gms.maps.model.LatLng latLng;
+            private int id;
+            private double distanceToUser;
 
-            public VenueLocation(Double lat, Double lng, int venueId) {
-                this.lat = lat;
-                this.lng = lng;
-                this.latLng = new com.google.android.gms.maps.model.LatLng(lat, lng);
-                this.venueId = venueId;
+            public VenueLocation(double latitude, double longitude, int id, Location location){
+                this.latLng = new com.google.android.gms.maps.model.LatLng(latitude,longitude);
+                this.id = id;
+                this.distanceToUser = SphericalUtil.computeDistanceBetween(new com.google.android.gms.maps.model.LatLng(location.getLatitude(),location.getLongitude()), this.latLng);
             }
 
-            public com.google.android.gms.maps.model.LatLng getLatLng() {
-                return latLng;
+            public int getId() {
+                return id;
+            }
+
+            public double getDistanceToUser() {
+                return distanceToUser;
             }
         }
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-        mFusedLocationClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+        mFusedLocationClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
-                Log.i("Location Lat", String.valueOf(location.getLatitude()));
-                Log.i("Location Lng", String.valueOf(location.getLongitude()));
-                VenueLocation brestLocation = new VenueLocation(48.44159, -4.41268, R.id.brestmapbox);
-                VenueLocation ibmLocation = new VenueLocation(48.9065881, 2.2620319, R.id.ibmmap);
-                VenueLocation colombesLocation = new VenueLocation(48.9339509, 2.2523098, R.id.colombesmap);
-                VenueLocation argentineLocation = new VenueLocation(-34.5265248, -58.4709851, R.id.buenosairesmap);
-                com.google.android.gms.maps.model.LatLng userLocation = new com.google.android.gms.maps.model.LatLng(location.getLatitude(), location.getLongitude());
-                Double userToBrest = SphericalUtil.computeDistanceBetween(userLocation, brestLocation.getLatLng());
-                Double userToIbm = SphericalUtil.computeDistanceBetween(userLocation, ibmLocation.getLatLng());
-                Double userToColombes = SphericalUtil.computeDistanceBetween(userLocation, colombesLocation.getLatLng());
-                Double userToArgentine = SphericalUtil.computeDistanceBetween(userLocation, argentineLocation.getLatLng());
-                Log.i("Distance To Brest", String.valueOf(userToBrest) + "m");
-                Log.i("Distance To IBM", String.valueOf(userToIbm) + "m");
-                Log.i("Distance To Colombes", String.valueOf(userToColombes) + "m");
-                Log.i("Distance to Argentine", String.valueOf(userToArgentine) + "m");
-                distances[0] = userToBrest;
-                distances[1] = userToIbm;
-                distances[2] = userToColombes;
-                distances[3] = userToArgentine;
-                double echange;
-                boolean distanceSorted = false;
-                int taille = distances.length;
-                while (distanceSorted != true) {
-                    distanceSorted = true;
-                    for (int i = 0; i < (taille - 1); i++) {
-                        if (distances[i] > distances[i + 1]) {
-                            echange = distances[i];
-                            distances[i] = distances[i + 1];
-                            distances[i + 1] = echange;
-                            distanceSorted = false;
-                        }
-                    }
-                    taille--;
-                }
-                for (int i = 0; i < distances.length; i++) {
-                    Log.i("Distance Tab", String.valueOf(distances[i]));
-                }
-                if (distances[0] == userToBrest) {
-                    Log.i("LoadingMap", "Brest");
-                    setVenue(R.id.brestmapbox);
+                if(location==null){
                     fetchLocationData(getVenue());
-                } else {
-                    if (distances[0] == userToColombes) {
-                        Log.i("LoadingMap", "Colombes");
-                        setVenue(R.id.colombesmap);
-                        fetchLocationData(getVenue());
-                    }
-                    if (distances[0] == userToIbm) {
-                        Log.i("LoadingMap", "IBM");
-                        setVenue(R.id.ibmmap);
-                        fetchLocationData(getVenue());
-                    }
-                    if (distances[0] == userToArgentine) {
-                        Log.i("LoadingMap", "Argentine");
-                        setVenue(R.id.buenosairesmap);
-                        fetchLocationData(getVenue());
+                    return;
+                }
+                ArrayList<VenueLocation> venues = new ArrayList<>();
+                venues.add(new VenueLocation(48.44159,-4.41268, R.id.brestmapbox,location));
+                venues.add(new VenueLocation(48.9065881, 2.2620319, R.id.ibmmap, location));
+                venues.add(new VenueLocation(48.9339509, 2.2523098, R.id.colombesmap, location));
+                venues.add(new VenueLocation(-34.5265248, -58.4709851, R.id.buenosairesmap, location));
+                VenueLocation tampon = venues.get(0);
+                for(VenueLocation object : venues){
+                    if(object.getDistanceToUser()<tampon.getDistanceToUser()){
+                        tampon = object;
                     }
                 }
+                setVenue(tampon.getId());
+                fetchLocationData(getVenue());
             }
         });
     }
@@ -690,10 +660,7 @@ public class MainActivity extends AppCompatActivity {
         LatLngFloor from;
         try {
             from = new LatLngFloor(mapwizePlugin.getUserPosition().getLatitude(), mapwizePlugin.getUserPosition().getLongitude(), mapwizePlugin.getUserPosition().getFloor());
-
-
         } catch (Exception e) {
-
             from = new LatLngFloor(0, 0, 0.0);
         }
         Api.getDirection(from, place, true, new ApiCallback<Direction>() {
@@ -701,8 +668,11 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(Direction direction) {
                 mapwizePlugin.setDirection(direction);
                 saveDirection = direction;
+                Log.i("Subdirection","size: "+direction.getRoutes().size());
+                for(int i=0;i<direction.getRoutes().get(0).getPath().size();i++){
+                    Log.i("Subdirection",direction.getRoutes().get(0).getPath().get(i).toString());
+                }
             }
-
             @Override
             public void onFailure(Throwable throwable) {
                 Log.i("Direction", "failed: " + throwable.getMessage());
@@ -732,6 +702,12 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.button_container).setVisibility(GONE);
         findViewById(R.id.floating_search_view).setVisibility(GONE);
         webFragment = new WebFragment();
+        try{
+            Log.i("showInfos",lastClickedPlace.getData().getString("url"));
+            webFragment.setUrl(lastClickedPlace.getData().getString("url"));
+        }catch (Exception e){
+            Log.i("showInfos","error: "+e.getMessage());
+        }
         getFragmentManager().beginTransaction().add(R.id.main_content,webFragment,"webFragment").commit();
         try{
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
