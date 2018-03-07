@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ale.proserv.geoapp3.fragment.VisioglobeLocationFragment;
 import com.ale.proserv.geoapp3.fragment.VisioglobeSearchFragment;
@@ -61,7 +63,6 @@ import io.mapwize.mapwizeformapbox.MapOptions;
 import io.mapwize.mapwizeformapbox.MapwizePlugin;
 import io.mapwize.mapwizeformapbox.api.Api;
 import io.mapwize.mapwizeformapbox.api.ApiCallback;
-import io.mapwize.mapwizeformapbox.api.ApiFilter;
 import io.mapwize.mapwizeformapbox.api.SearchParams;
 import io.mapwize.mapwizeformapbox.model.Direction;
 import io.mapwize.mapwizeformapbox.model.LatLngFloor;
@@ -839,4 +840,48 @@ public class MainActivity extends AppCompatActivity {
         fetchLocationData(getVenue());
     }
     //*********************************DEBUG*************************************
+
+    //*********************************INTENT************************************
+    @Override
+    protected void onNewIntent(Intent intent) {
+        Toast.makeText(this,"onNewIntent",Toast.LENGTH_SHORT).show();
+        Log.i("onNewIntent","onNewIntent");
+        super.onNewIntent(intent);
+        Uri uri = intent.getData();
+        String method;
+        String whereToGo;
+        if(uri != null){
+            Log.i("onNewIntent","uri: "+uri.toString());
+            method = uri.getQueryParameter("action");
+            if(method != null){
+                if(method.equalsIgnoreCase("wayfinding")){
+                    whereToGo = uri.getQueryParameter("poi");
+                    if(whereToGo != null){
+                        if(visioglobeLocationFragment != null){
+                            visioglobeLocationFragment.gotoPlaceId(whereToGo);
+                            Log.i("onNewIntent","method: "+method);
+                            Log.i("onNewIntent","whereToGo: "+whereToGo);
+                        }
+                    }
+                }
+            }
+        } else {
+            method = intent.getStringExtra("action");
+            Log.i("onNewIntent","method: "+intent.getStringExtra("action"));
+            if(method != null){
+                if(method.equalsIgnoreCase("wayfinding")){
+                    whereToGo = getIntent().getStringExtra("poi");
+                    if(whereToGo != null){
+                        if(visioglobeLocationFragment != null){
+                            visioglobeLocationFragment.setDestination(whereToGo);
+                            Log.i("onNewIntent","method: "+method);
+                            Log.i("onNewIntent","whereToGo: "+whereToGo);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+    //*********************************INTENT************************************
 }

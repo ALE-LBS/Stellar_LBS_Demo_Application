@@ -23,12 +23,26 @@
         <service android:name=".services.AndroidService" />
 
         <activity
+            android:launchMode="singleTask"
             android:name=".MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter android:autoVerify="true" android:label="lbsapp">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="http"
+                    android:host="ec2-52-14-144-186.us-east-2.compute.amazonaws.com"
+                    android:pathPrefix="/lbsapp"/>
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="lbsapp"/>
             </intent-filter>
         </activity>
         <activity
