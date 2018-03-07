@@ -26,7 +26,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
 
-    implementation 'eu.polestar:naosdk:4.4.7'
+    implementation 'com.ale.omniaccess.stellar:lbssdk:4.+'
 
     implementation("io.mapwize.indoormaps:MapwizeForMapbox:1.0.7@aar") {
         transitive = true
