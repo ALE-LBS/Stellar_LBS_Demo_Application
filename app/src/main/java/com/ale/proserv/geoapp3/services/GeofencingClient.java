@@ -8,13 +8,14 @@ import com.polestar.naosdk.api.external.NAOGeofenceListener;
 import com.polestar.naosdk.api.external.NAOGeofencingHandle;
 import com.polestar.naosdk.api.external.NAOGeofencingListener;
 import com.polestar.naosdk.api.external.NAOServiceHandle;
+import com.polestar.naosdk.api.external.NAOSyncListener;
 import com.polestar.naosdk.api.external.NaoAlert;
 
 /**
  * Created by vaymonin on 01/02/2018.
  */
 
-public class GeofencingClient extends NAOServiceHandle implements NAOGeofencingListener, NAOGeofenceListener {
+public class GeofencingClient extends NAOServiceHandle implements NAOGeofencingListener, NAOGeofenceListener, NAOSyncListener {
     protected NAOGeofencingHandle handle; // generic service handle
 
     protected MainActivity mainActivityHandle; // generic service handle
@@ -28,6 +29,7 @@ public class GeofencingClient extends NAOServiceHandle implements NAOGeofencingL
     public void createHandle() {
         if (handle == null) {
             handle = new NAOGeofencingHandle(mainActivityHandle, AndroidService.class, applicationKey, this, null);
+            handle.synchronizeData(this);
         }
     }
 
@@ -115,5 +117,15 @@ public class GeofencingClient extends NAOServiceHandle implements NAOGeofencingL
         Log.i("GeofencingClient ", "onError event received");
         Log.e(this.getClass().getName(), "onError " + message);
         //  mainActivityHandle.notifyUser("onError " + errCode + " " + message);
+    }
+
+    @Override
+    public void onSynchronizationSuccess() {
+        Log.i("GeofencingClient","Synchronization success");
+    }
+
+    @Override
+    public void onSynchronizationFailure(NAOERRORCODE naoerrorcode, String s) {
+        Log.i("GeofencingeClient","Synchronization failed: "+naoerrorcode.name());
     }
 }

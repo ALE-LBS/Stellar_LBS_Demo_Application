@@ -31,7 +31,6 @@ public class LocationClient extends NAOServiceHandle implements NAOLocationListe
 
     public void createHandle() {
         Log.i("LocationClient","Handle");
-        Log.i("LocationClient",applicationKey);
         if (handle == null) {
             handle = new NAOLocationHandle(mainActivityHandle, AndroidService.class, applicationKey, this, this);
             handle.synchronizeData(this);

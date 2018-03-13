@@ -54,6 +54,7 @@ import com.polestar.naosdk.api.external.NAOAlertRule;
 import com.polestar.naosdk.api.external.NaoAlert;
 import com.polestar.naosdk.api.external.TALERTRULE;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
     private Direction saveDirection;
 
     private WebFragment webFragment;
+    private boolean isWebFragmentVisible = false;
 
 
     @Override
@@ -151,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             findViewById(R.id.floating_search_view).setVisibility(View.VISIBLE);
             locationClient = new LocationClient(this, Keys.getAppBrestKey());
             geofencingClient = new GeofencingClient(this, Keys.getAppBrestKey());
+            //geofencingClient = new GeofencingClient(this, Keys.getAppBrestKey());
             startServices();
             final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             LatLng patagonia = new LatLng(48.44159, -4.41268);
@@ -170,7 +173,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-
         }
         if (venue == R.id.ibmmap) {
             findViewById(R.id.floating_search_view).setVisibility(View.VISIBLE);
@@ -197,8 +199,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (venue == R.id.buenosairesmap) {
             findViewById(R.id.floating_search_view).setVisibility(View.VISIBLE);
-            locationClient = new LocationClient(this, Keys.getAppBrestKey());
-            geofencingClient = new GeofencingClient(this, Keys.getAppBrestKey()); //TODO generate keys
+            locationClient = new LocationClient(this, Keys.getAppArgKey());
+            geofencingClient = new GeofencingClient(this, Keys.getAppArgKey());
             final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             LatLng patagonia = new LatLng(-34.526517, -58.470869);
             MapboxMapOptions options = new MapboxMapOptions();
@@ -333,11 +335,12 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i("Webview Geofence", "open: "+alert.getContent());
                                     Log.i("Webview","Activity Visible: " + MainApplication.isActivityVisible());
                                     if(MainApplication.isActivityVisible()) {
+                                        isWebFragmentVisible = true;
                                         findViewById(R.id.button_container).setVisibility(GONE);
                                         findViewById(R.id.floating_search_view).setVisibility(GONE);
                                         webFragment = new WebFragment();
                                         webFragment.setUrl(alert.getContent());
-                                        getFragmentManager().beginTransaction().add(R.id.main_content, webFragment, "webFragment").commit();
+                                        getFragmentManager().beginTransaction().add(R.id.main_content, webFragment, "webFragment").addToBackStack(null).commit();
                                         try {
                                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                                         } catch (Exception e) {
@@ -669,10 +672,6 @@ public class MainActivity extends AppCompatActivity {
             public void onSuccess(Direction direction) {
                 mapwizePlugin.setDirection(direction);
                 saveDirection = direction;
-                Log.i("Subdirection","size: "+direction.getRoutes().size());
-                for(int i=0;i<direction.getRoutes().get(0).getPath().size();i++){
-                    Log.i("Subdirection",direction.getRoutes().get(0).getPath().get(i).toString());
-                }
             }
             @Override
             public void onFailure(Throwable throwable) {
@@ -884,4 +883,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
     //*********************************INTENT************************************
+
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(isWebFragmentVisible){
+            try {
+                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+            } catch (Exception e) {
+                Log.e("Exception", e.getMessage());
+            }
+            getSupportActionBar().setDisplayShowHomeEnabled(false);
+        }
+    }
 }
