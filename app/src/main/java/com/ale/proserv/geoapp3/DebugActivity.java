@@ -38,7 +38,7 @@ public class DebugActivity extends AppCompatActivity {
         editor.putString("debugBrestMWZ",editTextBrestMWZ.getText().toString());
         editor.putString("debugIbm",editTextIBM.getText().toString());
         editor.putString("debugArgentine",editTextArgentine.getText().toString());
-        editor.commit();
+        editor.apply();
         sendData();
     }
 

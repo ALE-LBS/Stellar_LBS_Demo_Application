@@ -12,14 +12,14 @@ import com.polestar.naosdk.api.external.NAOSyncListener;
 import com.polestar.naosdk.api.external.NaoAlert;
 
 /**
- * Created by vaymonin on 01/02/2018.
+ * Created by vaymonin on 01/02/2018
  */
 
 public class GeofencingClient extends NAOServiceHandle implements NAOGeofencingListener, NAOGeofenceListener, NAOSyncListener {
-    protected NAOGeofencingHandle handle; // generic service handle
 
-    protected MainActivity mainActivityHandle; // generic service handle
-    protected String applicationKey;
+    private NAOGeofencingHandle handle; // generic service handle
+    private MainActivity mainActivityHandle; // generic service handle
+    private String applicationKey;
 
     public GeofencingClient (MainActivity mainActivity, String key) {
         mainActivityHandle = mainActivity;

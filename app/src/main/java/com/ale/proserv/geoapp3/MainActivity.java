@@ -148,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
+    //TODO Multisite API Key and test map provider instead of site?
+    //TODO find a way to center on coordinate without testing venue, see changeMap method (base loading in GPS/default map)
     public void fetchLocationData(int venue) {
         if (venue == R.id.brestmapbox) {
             findViewById(R.id.floating_search_view).setVisibility(View.VISIBLE);
@@ -247,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.beginTransaction().replace(R.id.main_content, visioglobeLocationFragment).commit();
         }
         if (venue == R.id.positionSimul) {
+            //TODO just reload LocationClient with simulation key?
             findViewById(R.id.floating_search_view).setVisibility(View.VISIBLE);
             locationClient = new LocationClient(this, Keys.getAppSimulKey());
             geofencingClient = new GeofencingClient(this, Keys.getAppIbmKey());
@@ -321,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //********************OMNIACCESS STELLAR LBS********************************
+    //TODO ->GeofencingClient
     public void onFireNaoAlert(NaoAlert alert) {
         java.util.ArrayList<NAOAlertRule> lList = alert.getRules();
         if (lList != null) {
@@ -895,6 +899,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("Exception", e.getMessage());
             }
             getSupportActionBar().setDisplayShowHomeEnabled(false);
+            isWebFragmentVisible = false;
         }
     }
 }

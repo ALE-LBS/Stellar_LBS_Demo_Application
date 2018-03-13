@@ -3,7 +3,7 @@ package com.ale.proserv.geoapp3.services;
 import com.ale.proserv.geoapp3.util.HttpHelper;
 
 /**
- * Created by vaymonin on 24/10/2017.
+ * Created by vaymonin on 24/10/2017
  */
 
 public class PeopleTracker {
@@ -12,10 +12,11 @@ public class PeopleTracker {
     private static final String PEOPLE_TRACKING_URL 		= ROOT_URL + "/nao_trackables/record_location?site_id=ID&auth_token=" + AUTH_TOKEN;
     private static final PeopleTracker instance = new PeopleTracker();
 
-    public static final PeopleTracker instance() {
+    public static PeopleTracker instance() {
         return instance;
     }
 
+    //TODO enable in initialization
     private boolean isEnabled = true;
     private boolean isSendingLocation = false;
 

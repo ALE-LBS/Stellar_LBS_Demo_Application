@@ -1,5 +1,6 @@
 package com.ale.proserv.geoapp3;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.webkit.WebViewClient;
 
 public class BrowserActivity extends AppCompatActivity {
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -15,13 +17,11 @@ public class BrowserActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         String url = getIntent().getExtras().get("url").toString();
-        WebView webView = (WebView) findViewById(R.id.webView);
+        WebView webView = findViewById(R.id.webView);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.setWebViewClient(new WebViewClient()
-        {
+        webView.setWebViewClient(new WebViewClient(){
             @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url)
-            {
+            public boolean shouldOverrideUrlLoading(WebView view, String url){
                 Log.i("Browser","Loading");
                 view.loadUrl(url);
                 return true;

@@ -11,7 +11,7 @@ import android.webkit.WebViewClient;
 import android.webkit.WebViewFragment;
 
 /**
- * Created by vaymonin on 09/02/2018.
+ * Created by vaymonin on 09/02/2018
  */
 
 public class WebFragment extends WebViewFragment {

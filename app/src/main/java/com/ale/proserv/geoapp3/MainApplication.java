@@ -5,7 +5,7 @@ import android.app.Application;
 import io.mapwize.mapwizeformapbox.AccountManager;
 
 /**
- * Created by vaymonin on 20/10/2017.
+ * Created by vaymonin on 20/10/2017
  */
 
 public class MainApplication extends Application {

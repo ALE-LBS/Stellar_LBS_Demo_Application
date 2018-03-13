@@ -9,17 +9,15 @@ import com.polestar.naosdk.api.external.NAOSensorsListener;
 import com.polestar.naosdk.api.external.NAOServiceHandle;
 import com.polestar.naosdk.api.external.NAOSyncListener;
 import com.polestar.naosdk.api.external.TNAOFIXSTATUS;
-
-import com.ale.proserv.geoapp3.services.AndroidService;
 import com.ale.proserv.geoapp3.MainActivity;
 
 
 
 public class LocationClient extends NAOServiceHandle implements NAOLocationListener, NAOSensorsListener, NAOSyncListener {
 
-    protected NAOLocationHandle handle; // generic service handle
-    protected MainActivity mainActivityHandle; // generic service handle
-    protected String applicationKey;
+    private NAOLocationHandle handle; // generic service handle
+    private MainActivity mainActivityHandle; // generic service handle
+    private String applicationKey;
 
 
 
